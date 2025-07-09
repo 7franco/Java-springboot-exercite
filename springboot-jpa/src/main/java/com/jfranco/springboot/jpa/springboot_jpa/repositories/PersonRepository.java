@@ -7,10 +7,50 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 
+import com.jfranco.springboot.jpa.springboot_jpa.dto.PersonDto;
 import com.jfranco.springboot.jpa.springboot_jpa.entities.Person;
 
 public interface PersonRepository extends CrudRepository<Person, Long>{
 
+    @Query("Select p from Person p where p.name between 'J' and 'P' ")
+    List<Person> findAllBetweenName();
+
+    @Query("Select p from Person p where p.id between 2 and 5")
+    List<Person> findAllBetweenId();
+
+    @Query("Select lower(CONCAT(p.name,' ', p.lastName)) as fullName from Person p ")
+    List<String> getFullNameConcatLower();
+
+    @Query("Select upper(p.name ||' '|| p.lastName)from Person p ")
+    List<String> getFullNameConcatUpper();
+
+    //@Query("Select CONCAT(p.name,' ', p.lastName) as fullName from Person p ")
+    @Query("Select p.name ||' '|| p.lastName from Person p ")
+    List<String> getFullNameConcat();
+    
+    @Query("Select count(distinct(p.programmingLanguage)) from Person p")
+    Long findAllLanguageDistinctCount();
+
+    @Query("Select distinct(p.programmingLanguage) from Person p")
+    List<String> findAllLanguageDistinct();
+
+    @Query("Select distinct(p.name) from Person p")
+    List<String> findALlNamesDistinct();
+
+    @Query("Select p.name from Person p")
+    List<String> findALlNames();
+
+    @Query("Select new com.jfranco.springboot.jpa.springboot_jpa.dto.PersonDto(p.name, p.lastName) from Person p")
+    List<PersonDto> findAllPersonDtoPersonalized();
+
+    @Query("Select new Person(p.name, p.lastName) from Person p")
+    List<Person> findAllObjectPersonPersonalized();
+
+    @Query("Select p.name from Person p where p.id=?1")
+    String getNameById(Long id);
+
+    @Query("Select CONCAT(p.name,' ', p.lastName) as fullName from Person p where p.id=?1")
+    String getFullNameById(Long id);
 
     @Query("select p from Person p where p.id=?1")
     Optional<Person> findOne(Long id); 
@@ -33,6 +73,15 @@ public interface PersonRepository extends CrudRepository<Person, Long>{
 
     List<Person> findByProgrammingLanguageAndName(String programmingLanguage, String name);    
 
+    @Query("select p.id, p.name, p.lastName, p.programmingLanguage from Person p")
+    List<Object[]> obtenerPersonDataFullList();
+
+    @Query("select p.id, p.name, p.lastName, p.programmingLanguage from Person p where p.id=?1")
+    Object obtenerPersonDataFullById(Long id);
+
     @Query("select p.name, p.programmingLanguage from Person p")
     List<Object[]> obtenerPersonData();
+
+    @Query("select p, p.programmingLanguage from Person p")
+    List<Object[]> findAllMixPerson();
 } 
