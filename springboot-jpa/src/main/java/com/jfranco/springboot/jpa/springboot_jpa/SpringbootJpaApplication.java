@@ -25,9 +25,82 @@ public class SpringbootJpaApplication implements CommandLineRunner{
 
 	@Override
 	public void run(String... args) throws Exception {
+		delete2();
+	}
+
+	@Transactional
+	public void delete2(){
+		repository.findAll().forEach(System.out::println);
+		Scanner scanner = new Scanner(System.in);
+		System.out.println("Ingrese el ID de la persona a eliminar");
+		Long id = scanner.nextLong();
 		
-		create();
-		list();
+		Optional<Person> optionalPerson = repository.findById(id);
+		//1
+		optionalPerson.ifPresentOrElse(person-> repository.delete(person), ()->System.out.println("Lo sentimos no existe la persona con ese id!"));
+		//2
+		optionalPerson.ifPresentOrElse(repository::delete, ()->System.out.println("Lo sentimos no existe la persona con ese id!"));
+		//3
+		if(optionalPerson.isPresent()){
+			Person p = optionalPerson.orElseThrow();
+			System.out.println(p);
+			System.out.println("Ingrese el lenguaje de programación: ");
+			String programmingLanguage = scanner.next();
+			p.setProgrammingLanguage(programmingLanguage);
+			repository.delete(p);
+			System.out.println(p);
+		}else{
+			System.out.println("El usuario no existe...!");
+		}
+
+		repository.findAll().forEach(System.out::println);
+		scanner.close();
+	}
+
+
+	@Transactional
+	public void delete(){
+		repository.findAll().forEach(System.out::println);
+		Scanner scanner = new Scanner(System.in);
+		System.out.println("Ingrese el ID de la persona a eliminar");
+		Long id = scanner.nextLong();
+		repository.deleteById(id);
+		repository.findAll().forEach(System.out::println);
+		scanner.close();
+	}
+
+	@Transactional
+	public void update(){
+		Scanner scanner = new Scanner(System.in);
+		System.out.println("Ingrese el ID de la persona a editar");
+		Long id = scanner.nextLong();
+		Optional<Person> optionalPerson = repository.findById(id);
+		
+		/*optionalPerson.ifPresent(p ->{
+			System.out.println(p);
+			System.out.println("Ingrese el lenguaje de programación: ");
+			String programmingLanguage = scanner.next();
+			p.setProgrammingLanguage(programmingLanguage);
+			repository.save(p);
+			System.out.println(p);
+		});*/
+
+		if(optionalPerson.isPresent()){
+			Person p = optionalPerson.orElseThrow();
+			System.out.println(p);
+			System.out.println("Ingrese el lenguaje de programación: ");
+			String programmingLanguage = scanner.next();
+			p.setProgrammingLanguage(programmingLanguage);
+			repository.save(p);
+			System.out.println(p);
+		}else{
+			System.out.println("El usuario no existe...!");
+		}
+
+			
+
+
+		scanner.close();
 	}
 
 	@Transactional
