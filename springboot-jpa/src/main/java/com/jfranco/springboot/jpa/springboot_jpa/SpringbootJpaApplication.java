@@ -32,11 +32,25 @@ public class SpringbootJpaApplication implements CommandLineRunner{
 	@Transactional
 	public void personalizedQueriesBetween(){
 		System.out.println("==== Consulta personalizedQueriesBetween ======");
-		List<Person> persons = repository.findAllBetweenId();
+		List<Person> persons = repository.findAllBetweenId(2L,5L);
 		persons.forEach(System.out::println);
 
 		System.out.println("==== Consulta entre j y p ======");
-		persons = repository.findAllBetweenName();
+		Scanner scanner = new Scanner(System.in);
+		System.out.print("Ingrese el primer valor: ");
+		String c1 =scanner.next();
+		System.out.print("Ingrese el segundo valor: ");
+		String c2 =scanner.next();
+		scanner.close();
+		persons = repository.findAllBetweenName(c1, c2);
+		persons.forEach(System.out::println);
+
+		System.out.println("==== Consulta findByIdBetween ======");
+		persons = repository.findByIdBetween(2L,5L);
+		persons.forEach(System.out::println);
+
+		System.out.println("==== Consulta findByNameBetween ======");
+		persons = repository.findByNameBetween("J","P");
 		persons.forEach(System.out::println);
 	}
 
