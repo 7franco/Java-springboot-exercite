@@ -12,15 +12,51 @@ import com.jfranco.springboot.jpa.springboot_jpa.entities.Person;
 
 public interface PersonRepository extends CrudRepository<Person, Long>{
 
-    List<Person> findByIdBetween(Long id1,Long id2);
+    @Query("select p from Person p where p.id in ?1")
+    public List<Person> getPersonsById(List<Long> ids); 
 
-    List<Person> findByNameBetween(String name1,String name2);
+    @Query("Select p.name, length(p.name) from Person p where length(p.name)=(select min(length(p.name)) from Person p)")
+    public List<Object[]> getShorterName();
 
-    @Query("Select p from Person p where p.name between ?1 and ?2 ")
-    List<Person> findAllBetweenName(String c1, String c2);
+    @Query("select p from Person p  where p.id=(select max(p.id) from Person p)")
+    public Optional<Person> getLastRegistration();
 
-    @Query("Select p from Person p where p.id between ?1 and ?2")
-    List<Person> findAllBetweenId(Long v1, Long v2);
+    @Query("select min(p.id), max(p.id), sum(p.id), avg(length(p.name)), count(p.id) from Person p")
+    public Object getResumeAggregationFuncion();
+
+    @Query("select min(length(p.name)) from Person p")
+    public Integer getMinLengName();
+
+    
+    @Query("select max(length(p.name)) from Person p")
+    public Integer getMaxLengName();
+
+    @Query("select p.name, length(p.name) from Person p")
+    public List<Object[]> getPersonNameLength(); 
+
+    @Query("Select count(p) from Person p")
+    Long getTotalPerson();
+
+    @Query("select min(p.id) from Person p")
+    Long getMinId();
+
+    @Query("select max(p.id) from Person p")
+    Long getMaxId();
+
+    List<Person> findAllByOrderByNameDesc();
+
+    @Query("Select p from Person p order by p.name, p.lastName desc")
+    List<Person> getAllOrdered();
+    
+    List<Person> findByIdBetweenOrderByIdDesc(Long id1,Long id2);
+
+    List<Person> findByNameBetweenOrderByNameDesc(String name1,String name2);
+
+    @Query("Select p from Person p where p.name between ?1 and ?2 order by p.name asc, p.lastName desc")
+    public List<Person> findAllBetweenName(String c1, String c2);
+
+    @Query("Select p from Person p where p.id between ?1 and ?2 order by p.name asc")
+    public List<Person> findAllBetweenId(Long v1, Long v2);
 
     @Query("Select lower(CONCAT(p.name,' ', p.lastName)) as fullName from Person p ")
     List<String> getFullNameConcatLower();

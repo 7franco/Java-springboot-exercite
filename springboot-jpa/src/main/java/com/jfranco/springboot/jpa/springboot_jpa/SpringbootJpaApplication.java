@@ -1,5 +1,6 @@
 package com.jfranco.springboot.jpa.springboot_jpa;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.Scanner;
@@ -26,7 +27,82 @@ public class SpringbootJpaApplication implements CommandLineRunner{
 
 	@Override
 	public void run(String... args) throws Exception {
-		personalizedQueriesBetween();
+		subQuery();
+	}
+
+	@Transactional
+	public void subQuery(){
+		List<Object[]> personsRegs = repository.getShorterName();
+		personsRegs.forEach(p ->{
+			System.out.println("Length="+p[1] + ", Name="+p[0]);
+		});
+
+
+		 Optional<Person> getLastRegistration = repository.getLastRegistration();
+		 getLastRegistration.ifPresentOrElse(person-> System.out.println(person), ()->System.out.println("Lo sentimos no existe la persona con ese id!"));
+
+
+		 List<Person> getPersonsById = repository.getPersonsById(Arrays.asList(1L, 2L, 3L ,4L, 5L));
+		 getPersonsById.forEach(p ->{
+			System.out.println(p);
+		});
+		 
+	}
+
+	@Transactional
+	public void queriesFuntionAggregation(){
+		Long countPerson = repository.getTotalPerson();
+		System.out.println("Count: "+countPerson);
+		countPerson = repository.getMinId();
+		System.out.println("Min: "+countPerson);
+
+		countPerson = repository.getMaxId();
+		System.out.println("Max: "+countPerson);
+
+		List<Object[]> personsRegs = repository.getPersonNameLength();
+		personsRegs.forEach(p ->{
+			System.out.println("Length="+p[1] + ", Name="+p[0]);
+		});
+
+		Integer getMinLengName= repository.getMinLengName();
+		Integer getMaxLengName= repository.getMaxLengName();
+		
+		System.out.println("getMinLengName: "+getMinLengName);
+		System.out.println("getMaxLengName: "+getMaxLengName);
+
+		Object[] result =(Object[])repository.getResumeAggregationFuncion();
+		System.out.println("min= "+ result[0]+", max="+result[1]+", sum="+result[2]+ ", avg="+ result[3]+", count="+result[4]);
+
+		
+	}
+
+	@Transactional
+	public void personalizedQueriesBetween2(){
+		System.out.println("==== Consulta findAllBetweenId ======");
+		List<Person> persons = repository.findAllBetweenId(2L,5L);
+		persons.forEach(System.out::println);
+
+		System.out.println("==== Consulta findAllBetweenName ======");
+		persons = repository.findAllBetweenName("J","P");
+		persons.forEach(System.out::println);
+
+		System.out.println("==== Consulta findByIdBetween ======");
+		persons = repository.findByIdBetweenOrderByIdDesc(2L,5L);
+		persons.forEach(System.out::println);
+
+		System.out.println("==== Consulta findByNameBetweenOrderByNameDesc ======");
+		persons = repository.findByNameBetweenOrderByNameDesc("J","P");
+		persons.forEach(System.out::println);
+
+		System.out.println("==== Consulta getAll ======");
+		persons = repository.getAllOrdered();
+		persons.forEach(System.out::println);
+
+		System.out.println("==== Consulta findAllbyOrderByPersonsList ======");
+		persons = repository.findAllByOrderByNameDesc();
+		persons.forEach(System.out::println);
+
+
 	}
 
 	@Transactional
@@ -46,11 +122,11 @@ public class SpringbootJpaApplication implements CommandLineRunner{
 		persons.forEach(System.out::println);
 
 		System.out.println("==== Consulta findByIdBetween ======");
-		persons = repository.findByIdBetween(2L,5L);
+		//persons = repository.findByIdBetween(2L,5L);
 		persons.forEach(System.out::println);
 
 		System.out.println("==== Consulta findByNameBetween ======");
-		persons = repository.findByNameBetween("J","P");
+		//persons = repository.findByNameBetween("J","P");
 		persons.forEach(System.out::println);
 	}
 
