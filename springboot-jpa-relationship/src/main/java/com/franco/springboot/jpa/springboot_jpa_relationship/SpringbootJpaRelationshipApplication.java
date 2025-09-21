@@ -1,7 +1,9 @@
 package com.franco.springboot.jpa.springboot_jpa_relationship;
 
 import java.nio.file.OpenOption;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,7 +37,27 @@ public class SpringbootJpaRelationshipApplication implements CommandLineRunner{
 		//manyToOneFindByIdClient();
 		//oneToManyFindId();
 		// removeAddress();
-		removeOneToManyFindId();
+		// removeOneToManyFindId();
+		// oneToManyInvoiceBidireccionl();
+	}
+
+	@Transactional
+	public void oneToManyInvoiceBidireccionl(){
+		Client client = new Client("Fran", "Jonathan");
+		
+		Invoice invoice1 = new Invoice("Compra de casa", 5000L);
+		Invoice invoice2 = new Invoice("Compra de oficina", 8000L);
+
+		List<Invoice> invoices = new ArrayList<>();
+		invoices.add(invoice1);
+		invoices.add(invoice2);
+		client.setInvoices(invoices);
+
+		invoice1.setClient(client);
+		invoice2.setClient(client);
+
+		clientRepository.save(client);
+		System.out.println(client);
 	}
 
 	@Transactional
@@ -99,7 +121,7 @@ public class SpringbootJpaRelationshipApplication implements CommandLineRunner{
 	}
 
 	@Transactional
-	public void OneToMany(){
+	public void oneToMany(){
 		Client client = new Client("Fran", "Moras");
 		Address address1 = new Address("El vergel",1234);
 		Address address2 = new Address("El cambio",4321);
