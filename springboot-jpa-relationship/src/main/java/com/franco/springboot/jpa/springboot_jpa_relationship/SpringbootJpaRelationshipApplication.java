@@ -33,11 +33,56 @@ public class SpringbootJpaRelationshipApplication implements CommandLineRunner{
 	public void run(String... args) throws Exception {
 		//manyToOne();
 		//manyToOneFindByIdClient();
-		OneToManyFindId();
+		//oneToManyFindId();
+		// removeAddress();
+		removeOneToManyFindId();
 	}
 
 	@Transactional
-	public void OneToManyFindId(){
+	public void removeOneToManyFindId(){
+		Optional<Client> optionalClient = clientRepository.findById(2L);
+		optionalClient.ifPresent(client->{
+			Address address1 = new Address("El vergel",1234);
+			Address address2 = new Address("El cambio",4321);
+		
+			client.setAddresses(Arrays.asList(address1, address2));
+
+	
+			Client response = clientRepository.save(client);
+			System.out.println(response);
+
+			Optional<Client> optionalClient2 = clientRepository.findOne(2L);
+			optionalClient2.ifPresent(c->{
+				c.getAddresses().remove(address2);
+				clientRepository.save(c);
+				System.out.println(c);
+		});
+		});
+
+		
+	}
+
+	@Transactional
+	public void removeAddress(){
+		Client client = new Client("Fran", "Moras");
+		Address address1 = new Address("El vergel",1234);
+		Address address2 = new Address("El cambio",4321);
+		client.getAddresses().add(address1);
+		client.getAddresses().add(address2);
+		clientRepository.save(client);
+		System.out.println(client);
+
+		Optional<Client> optionalClient = clientRepository.findById(3L);
+		optionalClient.ifPresent(cl->{
+			cl.getAddresses().remove(address1);
+			clientRepository.save(cl);
+			System.out.println(cl);
+		});
+
+	}
+
+	@Transactional
+	public void oneToManyFindId(){
 		Optional<Client> optionalClient = clientRepository.findById(2L);
 		optionalClient.ifPresent(client->{
 			Address address1 = new Address("El vergel",1234);

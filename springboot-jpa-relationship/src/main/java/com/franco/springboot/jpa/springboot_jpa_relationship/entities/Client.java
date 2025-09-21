@@ -5,6 +5,7 @@ import java.util.List;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -24,7 +25,7 @@ public class Client {
     private String name;
     private String lastname;
 
-    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
     @JoinTable(
         name = "tbl_clients_to_direcciones", 
         joinColumns = @JoinColumn(name="id_cliente"),
