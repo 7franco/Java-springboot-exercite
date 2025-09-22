@@ -1,8 +1,6 @@
 package com.franco.springboot.jpa.springboot_jpa_relationship.entities;
 
-import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 import jakarta.persistence.CascadeType;
@@ -14,6 +12,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinTable;
 import jakarta.persistence.OneToMany;
+import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import jakarta.persistence.UniqueConstraint;
 
@@ -26,6 +25,9 @@ public class Client {
     private Long id;
     private String name;
     private String lastname;
+
+    @OneToOne
+    private ClientDetails clientDetails;
 
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
     @JoinTable(
@@ -101,6 +103,13 @@ public class Client {
         invoice.setClient(null);
     }
 
+    public ClientDetails getClientDetails() {
+        return clientDetails;
+    }
+
+    public void setClientDetails(ClientDetails clientDetails) {
+        this.clientDetails = clientDetails;
+    }  
 
     @Override
     public String toString() {
@@ -108,7 +117,13 @@ public class Client {
                         ", name=" + name + 
                         ", lastname=" + lastname + 
                         ", invoices=" + invoices + 
-                        ", addresses="+ addresses + "}";
-    }        
+                        ", addresses="+ addresses + 
+                        ", clientDetails="+ clientDetails + 
+                        "}";
+    }
+
+          
+
+    
     
 }

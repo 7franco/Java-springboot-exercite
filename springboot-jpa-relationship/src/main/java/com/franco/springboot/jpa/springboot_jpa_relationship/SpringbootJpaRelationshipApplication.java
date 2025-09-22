@@ -45,7 +45,38 @@ public class SpringbootJpaRelationshipApplication implements CommandLineRunner{
 		// oneToManyInvoiceBidireccionlFindId();
 		// removeInvoiceBidireccionlFindId();
 		// removeInvoiceBidireccional();
-		oneToOne();
+		// oneToOne();
+		// oneToOneBidereccionar();
+		oneToOneFindById();
+	}
+
+	@Transactional
+	public void oneToOneFindById(){
+		ClientDetails clientDetail = new ClientDetails(true, 3000);
+		clientDetailsRepositoy.save(clientDetail);
+
+		ClientDetails clientDetail2 = new ClientDetails(true, 9000);
+		clientDetailsRepositoy.save(clientDetail2);
+
+		Optional<Client> clientOptional = clientRepository.findOne(2l);
+		clientOptional.ifPresent(client->{
+			client.setClientDetails(clientDetail2);
+			clientRepository.save(client);
+			System.out.println(client);
+		});
+		
+	}
+
+	@Transactional
+	public void oneToOneBidereccionar(){
+		ClientDetails clientDetail = new ClientDetails(true, 3000);
+		clientDetailsRepositoy.save(clientDetail);
+
+		Client client = new Client("Paola","Lopez");
+		client.setClientDetails(clientDetail);
+		clientRepository.save(client);
+	
+		System.out.println(client);
 	}
 
 	@Transactional
@@ -54,11 +85,9 @@ public class SpringbootJpaRelationshipApplication implements CommandLineRunner{
 		clientRepository.save(client);
 
 		ClientDetails clientDetail = new ClientDetails(true, 3000);
-		clientDetail.setClient(client);
+		// clientDetail.setClient(client);
 		clientDetailsRepositoy.save(clientDetail);
 		System.out.println(clientDetail);
-
-
 	}
 
 
