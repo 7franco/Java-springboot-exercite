@@ -13,7 +13,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.franco.springboot.jpa.springboot_jpa_relationship.entities.Address;
 import com.franco.springboot.jpa.springboot_jpa_relationship.entities.Client;
+import com.franco.springboot.jpa.springboot_jpa_relationship.entities.ClientDetails;
 import com.franco.springboot.jpa.springboot_jpa_relationship.entities.Invoice;
+import com.franco.springboot.jpa.springboot_jpa_relationship.repository.ClientDetailsRepository;
 import com.franco.springboot.jpa.springboot_jpa_relationship.repository.ClientRepository;
 import com.franco.springboot.jpa.springboot_jpa_relationship.repository.InvoiceRepository;
 
@@ -26,6 +28,8 @@ public class SpringbootJpaRelationshipApplication implements CommandLineRunner{
 	@Autowired
 	private InvoiceRepository invoiceRepository;
 
+	@Autowired
+	private ClientDetailsRepository clientDetailsRepositoy;
 	public static void main(String[] args) {
 		SpringApplication.run(SpringbootJpaRelationshipApplication.class, args);
 	}
@@ -40,8 +44,23 @@ public class SpringbootJpaRelationshipApplication implements CommandLineRunner{
 		// oneToManyInvoiceBidireccionl();
 		// oneToManyInvoiceBidireccionlFindId();
 		// removeInvoiceBidireccionlFindId();
-		removeInvoiceBidireccional();
+		// removeInvoiceBidireccional();
+		oneToOne();
 	}
+
+	@Transactional
+	public void oneToOne(){
+		Client client = new Client("Paola","Lopez");
+		clientRepository.save(client);
+
+		ClientDetails clientDetail = new ClientDetails(true, 3000);
+		clientDetail.setClient(client);
+		clientDetailsRepositoy.save(clientDetail);
+		System.out.println(clientDetail);
+
+
+	}
+
 
 	@Transactional
 	public void removeInvoiceBidireccional(){
