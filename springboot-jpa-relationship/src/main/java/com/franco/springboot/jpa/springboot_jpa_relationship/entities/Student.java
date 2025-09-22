@@ -3,14 +3,16 @@ package com.franco.springboot.jpa.springboot_jpa_relationship.entities;
 import java.util.HashSet;
 import java.util.Set;
 
-import jakarta.annotation.Generated;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.Table;
+import jakarta.persistence.UniqueConstraint;
 
 @Entity
 @Table(name = "students")
@@ -23,6 +25,12 @@ public class Student {
     private String lastName;
 
     @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @JoinTable(
+        name = "tbl_alumnos_cursos", 
+        joinColumns=@JoinColumn(name="alumno_id"),
+        inverseJoinColumns = @JoinColumn(name="curso_id"),
+        uniqueConstraints = @UniqueConstraint(columnNames ={"alumno_id","curso_id"})
+        )
     private Set<Course> courses;
 
     public Student() {
