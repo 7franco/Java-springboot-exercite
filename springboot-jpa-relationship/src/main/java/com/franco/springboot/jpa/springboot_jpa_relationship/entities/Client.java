@@ -26,7 +26,7 @@ public class Client {
     private String name;
     private String lastname;
 
-    @OneToOne
+    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "client")
     private ClientDetails clientDetails;
 
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
@@ -109,7 +109,14 @@ public class Client {
 
     public void setClientDetails(ClientDetails clientDetails) {
         this.clientDetails = clientDetails;
+        clientDetails.setClient(this);
     }  
+
+    public void removeClientDetails(ClientDetails clientDetails) {
+        clientDetails.setClient(null);
+        this.clientDetails = null;
+        
+    }
 
     @Override
     public String toString() {

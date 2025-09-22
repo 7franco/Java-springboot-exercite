@@ -14,10 +14,13 @@ import org.springframework.transaction.annotation.Transactional;
 import com.franco.springboot.jpa.springboot_jpa_relationship.entities.Address;
 import com.franco.springboot.jpa.springboot_jpa_relationship.entities.Client;
 import com.franco.springboot.jpa.springboot_jpa_relationship.entities.ClientDetails;
+import com.franco.springboot.jpa.springboot_jpa_relationship.entities.Course;
 import com.franco.springboot.jpa.springboot_jpa_relationship.entities.Invoice;
+import com.franco.springboot.jpa.springboot_jpa_relationship.entities.Student;
 import com.franco.springboot.jpa.springboot_jpa_relationship.repository.ClientDetailsRepository;
 import com.franco.springboot.jpa.springboot_jpa_relationship.repository.ClientRepository;
 import com.franco.springboot.jpa.springboot_jpa_relationship.repository.InvoiceRepository;
+import com.franco.springboot.jpa.springboot_jpa_relationship.repository.StudentRepository;
 
 @SpringBootApplication
 public class SpringbootJpaRelationshipApplication implements CommandLineRunner{
@@ -30,6 +33,10 @@ public class SpringbootJpaRelationshipApplication implements CommandLineRunner{
 
 	@Autowired
 	private ClientDetailsRepository clientDetailsRepositoy;
+
+	@Autowired
+	private StudentRepository studentRepository;
+
 	public static void main(String[] args) {
 		SpringApplication.run(SpringbootJpaRelationshipApplication.class, args);
 	}
@@ -47,7 +54,48 @@ public class SpringbootJpaRelationshipApplication implements CommandLineRunner{
 		// removeInvoiceBidireccional();
 		// oneToOne();
 		// oneToOneBidereccionar();
-		oneToOneFindById();
+		// oneToOneFindById();
+		// oneToOneBidereccionar2();
+		// oneToOneBidereccionar2FindById();
+		manyToMany();
+	}
+
+	@Transactional
+	public void manyToMany(){
+		Student student1 =  new Student("Krismary", "Lopez");
+		Student student2 =  new Student("Alejandro", "Cede;o");
+
+		Course course1 = new Course("Curso de Java master", "Andres");
+		Course course2 = new Course("Curso de Spring Boot", "Andres");
+		
+		student1.setCourses(Set.of(course1, course2));
+		student2.setCourses(Set.of(course2));
+
+		studentRepository.saveAll(Set.of(student1, student2));
+		
+		System.out.println(Set.of(student1, student2));
+		
+	}
+
+	@Transactional
+	public void oneToOneBidereccionar2FindById(){
+		Optional<Client> clientOptional = clientRepository.findOne(2L);
+		clientOptional.ifPresent(client->{
+			ClientDetails clientDetail = new ClientDetails(true, 3000);
+			client.setClientDetails(clientDetail);	
+			clientRepository.save(client);
+			System.out.println(client);
+		});
+	}
+
+	@Transactional
+	public void oneToOneBidereccionar2(){
+		Client client = new Client("Paola","Lopez");
+		ClientDetails clientDetail = new ClientDetails(true, 3000);
+		client.setClientDetails(clientDetail);
+		
+		clientRepository.save(client);
+		System.out.println(client);
 	}
 
 	@Transactional
