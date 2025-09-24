@@ -22,7 +22,7 @@ public class Product {
     private Long id;
 
     @isRequired
-    @IsExistDb
+    // @IsExistDb
     private String sku;
 
     // @NotEmpty(message = "{NotEmty.product.name}")
