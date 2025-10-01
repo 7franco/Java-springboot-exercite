@@ -11,6 +11,7 @@
 	<groupId>com.franco.repasando.springboot.app</groupId>
 	<artifactId>springboot-crud</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
+	<packaging>war</packaging>
 	<name>springboot-crud</name>
 	<description>Demo project for Spring Boot</description>
 	<url/>
@@ -43,6 +44,12 @@
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-web</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-tomcat</artifactId>
+			<scope>provided</scope>
 		</dependency>
 
 		<dependency>
@@ -88,6 +95,7 @@
 	</dependencies>
 
 	<build>
+	<finalName>${artifactId}</finalName>
 		<plugins>
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
