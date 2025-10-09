@@ -1,10 +1,15 @@
 package com.jfranco.springboot.jpa.springboot_jpa.entities;
 
+import java.time.LocalDateTime;
+
 import jakarta.persistence.Column;
+import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.PrePersist;
+import jakarta.persistence.PreUpdate;
 import jakarta.persistence.Table;
 
 @Entity
@@ -20,6 +25,9 @@ public class Person {
     @Column(name = "programming_language")
     private String programmingLanguage;
 
+    @Embedded
+    public Audit audit = new Audit();
+
     public Person() {
     }
 
@@ -28,7 +36,12 @@ public class Person {
         this.name = name;
         this.lastName = lastName;
         this.programmingLanguage = programmingLanguage;
-    }    
+    } 
+    
+    public Person(String name, String lastName) {
+        this.name = name;
+        this.lastName = lastName;
+    } 
 
     public Long getId() {
         return id;
@@ -59,8 +72,11 @@ public class Person {
 
     @Override
     public String toString() {
-        return "[id=" + id + ", name=" + name + ", lastName=" + lastName + ", programmingLanguage="
-                + programmingLanguage + "]";
+        return "[id=" + id + ", name=" + name + ", lastName=" + lastName 
+                + ", programmingLanguage="+ programmingLanguage + 
+                ", createAT="+ audit.getCreatAt() + 
+                ", updateAt="+ audit.getUpdateAt() +
+                "]";
     }
    
     

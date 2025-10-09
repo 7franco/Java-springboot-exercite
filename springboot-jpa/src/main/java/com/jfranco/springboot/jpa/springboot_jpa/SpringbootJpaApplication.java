@@ -1,13 +1,17 @@
 package com.jfranco.springboot.jpa.springboot_jpa;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
+import java.util.Scanner;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.transaction.annotation.Transactional;
 
+import com.jfranco.springboot.jpa.springboot_jpa.dto.PersonDto;
 import com.jfranco.springboot.jpa.springboot_jpa.entities.Person;
 import com.jfranco.springboot.jpa.springboot_jpa.repositories.PersonRepository;
 
@@ -23,11 +27,277 @@ public class SpringbootJpaApplication implements CommandLineRunner{
 
 	@Override
 	public void run(String... args) throws Exception {
-		
-		findOne();
-				
+		update();
 	}
 
+	@Transactional
+	public void subQuery(){
+		List<Object[]> personsRegs = repository.getShorterName();
+		personsRegs.forEach(p ->{
+			System.out.println("Length="+p[1] + ", Name="+p[0]);
+		});
+
+
+		 Optional<Person> getLastRegistration = repository.getLastRegistration();
+		 getLastRegistration.ifPresentOrElse(person-> System.out.println(person), ()->System.out.println("Lo sentimos no existe la persona con ese id!"));
+
+
+		 List<Person> getPersonsById = repository.getPersonsById(Arrays.asList(1L, 2L, 3L ,4L, 5L));
+		 getPersonsById.forEach(p ->{
+			System.out.println(p);
+		});
+		 
+	}
+
+	@Transactional
+	public void queriesFuntionAggregation(){
+		Long countPerson = repository.getTotalPerson();
+		System.out.println("Count: "+countPerson);
+		countPerson = repository.getMinId();
+		System.out.println("Min: "+countPerson);
+
+		countPerson = repository.getMaxId();
+		System.out.println("Max: "+countPerson);
+
+		List<Object[]> personsRegs = repository.getPersonNameLength();
+		personsRegs.forEach(p ->{
+			System.out.println("Length="+p[1] + ", Name="+p[0]);
+		});
+
+		Integer getMinLengName= repository.getMinLengName();
+		Integer getMaxLengName= repository.getMaxLengName();
+		
+		System.out.println("getMinLengName: "+getMinLengName);
+		System.out.println("getMaxLengName: "+getMaxLengName);
+
+		Object[] result =(Object[])repository.getResumeAggregationFuncion();
+		System.out.println("min= "+ result[0]+", max="+result[1]+", sum="+result[2]+ ", avg="+ result[3]+", count="+result[4]);
+
+		
+	}
+
+	@Transactional
+	public void personalizedQueriesBetween2(){
+		System.out.println("==== Consulta findAllBetweenId ======");
+		List<Person> persons = repository.findAllBetweenId(2L,5L);
+		persons.forEach(System.out::println);
+
+		System.out.println("==== Consulta findAllBetweenName ======");
+		persons = repository.findAllBetweenName("J","P");
+		persons.forEach(System.out::println);
+
+		System.out.println("==== Consulta findByIdBetween ======");
+		persons = repository.findByIdBetweenOrderByIdDesc(2L,5L);
+		persons.forEach(System.out::println);
+
+		System.out.println("==== Consulta findByNameBetweenOrderByNameDesc ======");
+		persons = repository.findByNameBetweenOrderByNameDesc("J","P");
+		persons.forEach(System.out::println);
+
+		System.out.println("==== Consulta getAll ======");
+		persons = repository.getAllOrdered();
+		persons.forEach(System.out::println);
+
+		System.out.println("==== Consulta findAllbyOrderByPersonsList ======");
+		persons = repository.findAllByOrderByNameDesc();
+		persons.forEach(System.out::println);
+
+
+	}
+
+	@Transactional
+	public void personalizedQueriesBetween(){
+		System.out.println("==== Consulta personalizedQueriesBetween ======");
+		List<Person> persons = repository.findAllBetweenId(2L,5L);
+		persons.forEach(System.out::println);
+
+		System.out.println("==== Consulta entre j y p ======");
+		Scanner scanner = new Scanner(System.in);
+		System.out.print("Ingrese el primer valor: ");
+		String c1 =scanner.next();
+		System.out.print("Ingrese el segundo valor: ");
+		String c2 =scanner.next();
+		scanner.close();
+		persons = repository.findAllBetweenName(c1, c2);
+		persons.forEach(System.out::println);
+
+		System.out.println("==== Consulta findByIdBetween ======");
+		//persons = repository.findByIdBetween(2L,5L);
+		persons.forEach(System.out::println);
+
+		System.out.println("==== Consulta findByNameBetween ======");
+		//persons = repository.findByNameBetween("J","P");
+		persons.forEach(System.out::println);
+	}
+
+	@Transactional
+	public void personalizedQueriesConcatUpperAndLowerCase(){
+		System.out.println("==== Consulta personalizedQueriesConcatUpperAndLowerCase ======");
+		List<String> names = repository.getFullNameConcat();
+		names.forEach(System.out::println);
+
+		System.out.println("==== UPPER ======");
+		List<String> namesUpper = repository.getFullNameConcatUpper();
+		namesUpper.forEach(System.out::println);
+
+		System.out.println("==== Lower ======");
+		List<String> nameslower = repository.getFullNameConcatLower();
+		nameslower.forEach(System.out::println);
+	}
+
+	@Transactional
+	public void personalizedQueries(){
+		System.out.println("==== Consulta con nombres de personas ======");
+		List<String> names = repository.findALlNames();
+		names.forEach(System.out::println);
+
+		System.out.println("==== Consulta con nombres de personas  Distintos======");
+		List<String> namesUnicos = repository.findALlNamesDistinct();
+		namesUnicos.forEach(System.out::println);
+
+		System.out.println("==== Consulta los Distintos lenguajes de programacion======");
+		List<String> lenguajes = repository.findAllLanguageDistinct();
+		lenguajes.forEach(System.out::println);
+
+
+		System.out.println("==== Consulta el total de los lenguajes de programacion======");
+		Long dato = repository.findAllLanguageDistinctCount();
+		System.out.println("Total: "+ dato);
+	} 
+
+	@Transactional
+	public void personalizeQueries2(){
+		System.out.println("====================== Consulta con objeto persona ======================");
+		List<Object[]> personsRegs = repository.findAllMixPerson();
+		personsRegs.forEach(p ->{
+			System.out.println("ProgrammingLanguage="+p[1] + ", person="+p[0]);
+		});
+
+		System.out.println("=============== Consulta que puebla ================");
+		List<Person> persons = repository.findAllObjectPersonPersonalized();
+		persons.forEach(p-> System.out.println(p));
+		System.out.println("======== COnsulta que puebla y devuelve objeto dto de una clase personalizada ===================");
+		List<PersonDto> personDtos = repository.findAllPersonDtoPersonalized();
+		personDtos.forEach(p-> System.out.println(p));
+	}
+
+	@Transactional
+	public void personalizeQueries(){
+		Scanner scanner = new Scanner(System.in);
+		System.out.println("====================== Consulta solo el nombre ======================");
+		System.err.println("Ingrese el id para el nombre");
+		Long id =scanner.nextLong();
+		scanner.close();
+		String name = repository.getNameById(id);
+		System.out.println(name);
+		String fullName = repository.getFullNameById(id);
+		System.out.println(fullName);
+
+		System.out.println("================ Mostrando Persona Personalizado ================");
+		System.out.println("Consulta por campo personalizador por el id");
+		Object[] personReg = (Object[]) repository.obtenerPersonDataFullById(id);
+		System.out.println("id= "+ personReg[0]+ ", nombre= "+ personReg[1]+ ", apellido= "+ personReg[2]+ ", lenguaje= "+ personReg[3]);
+
+		System.out.println("================ Consultar campos personalizados lista ================");
+		List<Object[]> regs = repository.obtenerPersonDataFullList();
+		regs.forEach(r-> System.out.println("id= "+ r[0]+ ", nombre= "+ r[1]+ ", apellido= "+ r[2]+ ", lenguaje= "+ r[3]));
+	}
+
+	@Transactional
+	public void delete2(){
+		repository.findAll().forEach(System.out::println);
+		Scanner scanner = new Scanner(System.in);
+		System.out.println("Ingrese el ID de la persona a eliminar");
+		Long id = scanner.nextLong();
+		
+		Optional<Person> optionalPerson = repository.findById(id);
+		//1
+		optionalPerson.ifPresentOrElse(person-> repository.delete(person), ()->System.out.println("Lo sentimos no existe la persona con ese id!"));
+		//2
+		optionalPerson.ifPresentOrElse(repository::delete, ()->System.out.println("Lo sentimos no existe la persona con ese id!"));
+		//3
+		if(optionalPerson.isPresent()){
+			Person p = optionalPerson.orElseThrow();
+			System.out.println(p);
+			System.out.println("Ingrese el lenguaje de programación: ");
+			String programmingLanguage = scanner.next();
+			p.setProgrammingLanguage(programmingLanguage);
+			repository.delete(p);
+			System.out.println(p);
+		}else{
+			System.out.println("El usuario no existe...!");
+		}
+
+		repository.findAll().forEach(System.out::println);
+		scanner.close();
+	}
+
+
+	@Transactional
+	public void delete(){
+		repository.findAll().forEach(System.out::println);
+		Scanner scanner = new Scanner(System.in);
+		System.out.println("Ingrese el ID de la persona a eliminar");
+		Long id = scanner.nextLong();
+		repository.deleteById(id);
+		repository.findAll().forEach(System.out::println);
+		scanner.close();
+	}
+
+	@Transactional
+	public void update(){
+		Scanner scanner = new Scanner(System.in);
+		System.out.println("Ingrese el ID de la persona a editar");
+		Long id = scanner.nextLong();
+		Optional<Person> optionalPerson = repository.findById(id);
+		
+		/*optionalPerson.ifPresent(p ->{
+			System.out.println(p);
+			System.out.println("Ingrese el lenguaje de programación: ");
+			String programmingLanguage = scanner.next();
+			p.setProgrammingLanguage(programmingLanguage);
+			repository.save(p);
+			System.out.println(p);
+		});*/
+
+		if(optionalPerson.isPresent()){
+			Person p = optionalPerson.orElseThrow();
+			System.out.println(p);
+			System.out.println("Ingrese el lenguaje de programación: ");
+			String programmingLanguage = scanner.next();
+			p.setProgrammingLanguage(programmingLanguage);
+			repository.save(p);
+			System.out.println(p);
+		}else{
+			System.out.println("El usuario no existe...!");
+		}
+
+			
+
+
+		scanner.close();
+	}
+
+	@Transactional
+	public void create(){
+
+		Scanner scanner = new Scanner(System.in);
+		System.out.println("Ingrese el nombre: ");
+		String name = scanner.next();
+		System.out.println("Ingrese el apellido: ");
+		String lastName = scanner.next();
+		System.out.println("Ingrese el lenguaje de programación: ");
+		String programmingLanguage = scanner.next();
+		scanner.close();
+		Person person = new Person(null, name, lastName, programmingLanguage);
+		Person personNew = repository.save(person);		
+		System.out.println(personNew);
+		
+		repository.findById(personNew.getId()).ifPresent(p -> System.out.println(p));
+		repository.findById(personNew.getId()).ifPresent(System.out::println);
+	}
+
+	@Transactional(readOnly = true)
 	public void findOne(){
 		//Person person = repository.findById(2L).get();
 		//System.out.println(person);
@@ -44,8 +314,16 @@ public class SpringbootJpaApplication implements CommandLineRunner{
 		//repository.findById(1L).ifPresent(person-> System.out.println(person));
 		repository.findOne(1L).ifPresent(System.out::println);
 		repository.findName("Francisca").ifPresent(System.out::println);
+
+		repository.findOneLikeName("al").ifPresent(System.out::println);
+
+		repository.findByName("Alicia").ifPresent(System.out::println);
+
+		repository.findByNameContaining("Alicia").ifPresent(System.out::println);
+		
 	}
 
+	@Transactional(readOnly = true)
 	public void list(){
 		
 		//List<Person> persons = (List<Person>) repository.findAll();
